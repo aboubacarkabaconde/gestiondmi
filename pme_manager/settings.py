@@ -8,7 +8,7 @@ import dj_database_url
 # ==========================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Charger les variables d’environnement
+# Charger le fichier .env (utile en local et dans Docker)
 load_dotenv(BASE_DIR / ".env")
 
 # ==========================
@@ -16,13 +16,15 @@ load_dotenv(BASE_DIR / ".env")
 # ==========================
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-key-change-me")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
+ALLOWED_HOSTS = os.getenv(
+    "DJANGO_ALLOWED_HOSTS",
+    "localhost 127.0.0.1 [::1]"
+).split(" ")
 
 # ==========================
 # 3. APPLICATIONS
 # ==========================
 INSTALLED_APPS = [
-    # Django apps de base
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -30,15 +32,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Tes applications
-    "core",
+    # --- TES APPS ---
     "factures",
     "depenses",
     "produits",
-    "site",
+    "sites.apps.SitesConfig",  # ✅ important
     "production",
 
-    # Librairies tierces
+    # --- LIBRAIRIES TIERCES ---
     "crispy_forms",
     "crispy_bootstrap5",
     "rest_framework",
@@ -105,9 +106,6 @@ LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 
-# ==========================
-# 7. VALIDATION DES MOTS DE PASSE
-# ==========================
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -116,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # ==========================
-# 8. INTERNATIONALISATION
+# 7. INTERNATIONALISATION
 # ==========================
 LANGUAGE_CODE = "fr-fr"
 TIME_ZONE = "Africa/Conakry"
@@ -124,7 +122,7 @@ USE_I18N = True
 USE_TZ = True
 
 # ==========================
-# 9. FICHIERS STATIQUES & MEDIA
+# 8. FICHIERS STATIQUES & MEDIA
 # ==========================
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -134,29 +132,58 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # ==========================
-# 10. LOGGING
+# 9. LOGGING
 # ==========================
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+
     "formatters": {
         "simple": {
             "format": "[{levelname}] {asctime} {name}: {message}",
             "style": "{",
         },
+        "concise": {
+            "format": "{levelname} {name}: {message}",
+            "style": "{",
+        },
     },
+
     "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "simple"},
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
     },
+
     "loggers": {
-        "": {"handlers": ["console"], "level": LOG_LEVEL},
-        "django": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": False},
+        "": {
+            "handlers": ["console"],
+            "level": LOG_LEVEL,
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": os.getenv("DB_LOG_LEVEL", "WARNING").upper(),
+            "propagate": False,
+        },
+        "rest_framework": {
+            "handlers": ["console"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
     },
 }
-
-# ==========================
-# 11. AUTRES
-# ==========================
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
