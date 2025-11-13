@@ -16,13 +16,15 @@ load_dotenv(BASE_DIR / ".env")
 # ==========================
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-key-change-me")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "[::1]",
-    "gestiondmi-3.onrender.com",  # ✅ ton domaine Render
-    ".onrender.com",              # ✅ wildcard pour Render (recommandé)
+    ".onrender.com",           # Autorise tous les sous-domaines Render
+    "gestiondmi-3.onrender.com",  # Domaine exact
 ]
+
 
 
 # ==========================
