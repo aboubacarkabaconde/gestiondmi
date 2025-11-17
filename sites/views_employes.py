@@ -1,47 +1,51 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import SiteFabrication
-from .forms import SiteFabricationForm
+from .models import Employe
+from .forms import EmployeForm
+
 
 @login_required
-def liste_sites(request):
-    sites = SiteFabrication.objects.all().order_by("nom")
-    return render(request, "sites/liste.html", {"sites": sites})
+def liste_employes(request):
+    employes = Employe.objects.all()
+    return render(request, "sites/employes/liste.html", {"employes": employes})
+
 
 @login_required
-def ajouter_site(request):
+def ajouter_employe(request):
     if request.method == "POST":
-        form = SiteFabricationForm(request.POST)
+        form = EmployeForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Site créé avec succès !")
-            return redirect("sites:liste")
+            messages.success(request, "Employé ajouté avec succès !")
+            return redirect("sites:liste_employes")
     else:
-        form = SiteFabricationForm()
-    return render(request, "sites/form.html", {"form": form})
+        form = EmployeForm()
+
+    return render(request, "sites/employes/form.html", {"form": form})
+
 
 @login_required
-def modifier_site(request, id):
-    site = get_object_or_404(SiteFabrication, pk=id)
+def modifier_employe(request, id):
+    employe = get_object_or_404(Employe, pk=id)
     if request.method == "POST":
-        form = SiteFabricationForm(request.POST, instance=site)
+        form = EmployeForm(request.POST, instance=employe)
         if form.is_valid():
             form.save()
-            messages.success(request, "Site modifié avec succès !")
-            return redirect("sites:liste")
+            messages.success(request, "Employé modifié avec succès !")
+            return redirect("sites:liste_employes")
     else:
-        form = SiteFabricationForm(instance=site)
-    return render(request, "sites/form.html", {"form": form})
+        form = EmployeForm(instance=employe)
+
+    return render(request, "sites/employes/form.html", {"form": form})
+
 
 @login_required
-def supprimer_site(request, id):
-    site = get_object_or_404(SiteFabrication, pk=id)
+def supprimer_employe(request, id):
+    employe = get_object_or_404(Employe, pk=id)
     if request.method == "POST":
-        site.delete()
-        messages.success(request, "Site supprimé avec succès !")
-        return redirect("sites:liste")
-    return render(request, "sites/supprimer.html", {"site": site})
+        employe.delete()
+        messages.success(request, "Employé supprimé avec succès !")
+        return redirect("sites:liste_employes")
+
+    return render(request, "sites/employes/supprimer.html", {"employe": employe})
