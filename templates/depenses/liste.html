@@ -10,26 +10,22 @@
         <h1 class="section-title text-danger">
             <i class="bi bi-cash-coin me-2"></i> Dépenses
         </h1>
-        <div>
 
-            <div>
-        <a href="{% url 'depenses:export_csv' %}" class="btn btn-outline-success me-2">
-            <i class="bi bi-file-earmark-excel"></i> Exporter CSV
-        </a>
+        <div class="d-flex align-items-center">
 
-        <!-- Pas de route imprimante → bouton désactivé -->
-        <a class="btn btn-outline-secondary disabled me-2">
-            <i class="bi bi-printer"></i> Imprimer
-        </a>
-           <!--  <a href="{% url 'depenses:export_csv' %}" class="btn btn-outline-success me-2">
+            <a href="{% url 'depenses:export_csv' %}" class="btn btn-outline-success me-2">
                 <i class="bi bi-file-earmark-excel"></i> Exporter CSV
             </a>
-            <a href="{% url 'depenses:imprimer' %}" class="btn btn-outline-danger me-2" target="_blank">
+
+            <!-- Bouton Imprimer désactivé -->
+            <a class="btn btn-outline-secondary disabled me-2">
                 <i class="bi bi-printer"></i> Imprimer
-            </a>-->
+            </a>
+
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#depenseModal">
                 <i class="bi bi-plus-circle"></i> Nouvelle Dépense
             </button>
+
         </div>
     </div>
 
@@ -44,6 +40,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-6 mb-3">
             <div class="card dashboard-card text-center text-warning">
                 <div class="card-body">
@@ -55,7 +52,7 @@
         </div>
     </div>
 
-    <!-- Tableau des Dépenses -->
+    <!-- Tableau -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body table-responsive">
             <table class="table table-hover align-middle">
@@ -74,16 +71,18 @@
                     {% for depense in depenses %}
                     <tr>
                         <td>#{{ depense.id }}</td>
-                        <td>
-                            <span class="badge bg-secondary">{{ depense.get_type_depense_display }}</span>
-                        </td>
+                        <td><span class="badge bg-secondary">{{ depense.get_type_depense_display }}</span></td>
                         <td><span class="badge bg-danger">{{ depense.montant }} FG</span></td>
                         <td>{{ depense.site.nom }}</td>
                         <td>{{ depense.employe|default:"—" }}</td>
                         <td>{{ depense.date_depense|date:"d/m/Y" }}</td>
                         <td>
-                            <a href="{% url 'depenses:modifier' depense.id %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                            <a href="{% url 'depenses:supprimer' depense.id %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            <a href="{% url 'depenses:modifier' depense.id %}" class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'depenses:supprimer' depense.id %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
@@ -104,6 +103,7 @@
                 <canvas id="depensesChart"></canvas>
             </div>
         </div>
+
         <div class="col-md-6 mb-3">
             <div class="card dashboard-card p-3 shadow-sm">
                 <h6 class="text-center text-primary">Répartition par Type de Dépense</h6>
@@ -113,24 +113,27 @@
     </div>
 </div>
 
-<!-- ================= Modale Ajout Dépense ================= -->
-<div class="modal fade" id="depenseModal" tabindex="-1" aria-labelledby="depenseModalLabel" aria-hidden="true">
+<!-- Modal Ajout Dépense -->
+<div class="modal fade" id="depenseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="depenseModalLabel">
+                <h5 class="modal-title">
                     <i class="bi bi-cash-coin me-2"></i> Ajouter une Dépense
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
+
             <div class="modal-body">
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
+
                     <div class="d-flex justify-content-end gap-2 mt-3">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                             <i class="bi bi-x-circle"></i> Annuler
                         </button>
+
                         <button type="submit" class="btn btn-danger">
                             <i class="bi bi-check-circle"></i> Enregistrer
                         </button>
@@ -140,12 +143,13 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    // Graphe Dépenses Mensuelles
     new Chart(document.getElementById("depensesChart"), {
         type: "line",
         data: {
@@ -162,7 +166,6 @@
         options: { responsive: true }
     });
 
-    // Graphe Répartition par Type
     new Chart(document.getElementById("typesDepensesChart"), {
         type: "doughnut",
         data: {
