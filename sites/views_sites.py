@@ -43,5 +43,6 @@ def supprimer_site(request, id):
     if request.method == "POST":
         site.delete()
         messages.success(request, "Site supprimé avec succès !")
-        return redirect("sites:liste")
+        return redirect("sites:liste")   # 🔥 BON NOM
     return render(request, "sites/supprimer.html", {"site": site})
+
