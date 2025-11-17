@@ -10,7 +10,8 @@
         <p>Supprimer le site <strong>{{ site.nom }}</strong> ?</p>
         <div class="d-flex gap-2">
           <form method="post">{% csrf_token %}<button class="btn btn-danger"><i class="bi bi-trash"></i> Supprimer</button></form>
-          <a href="{% url 'sites:liste_sites' %}" class="btn btn-secondary">Annuler</a>
+          <a href="{% url 'sites:liste' %}" class="btn btn-secondary">Annuler</a>
+
         </div>
       </div>
     </div>

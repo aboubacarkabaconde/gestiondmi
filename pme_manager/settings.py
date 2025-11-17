@@ -25,7 +25,22 @@ ALLOWED_HOSTS = [
     "gestiondmi-3.onrender.com",  # Domaine exact
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://gestiondmi-3.onrender.com',
+    'https://*.onrender.com',        # optionnel, pratique
+]
 
+# Si tu es derrière un proxy (Render) : respecte le X-Forwarded-Proto
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# En prod (DEBUG=False), force les cookies sécurisés
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    # (optionnel) redirige tout en HTTPS si tu as bien configuré Render en HTTPS
+    # SECURE_SSL_REDIRECT = True
 
 # ==========================
 # 3. APPLICATIONS
