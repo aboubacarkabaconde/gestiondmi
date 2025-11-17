@@ -58,10 +58,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                       <a class="nav-link {% if request.resolver_match.app_name == 'production' %}active{% endif %}" 
-   href="{% url 'production:liste_productions' %}">
-   <i class="bi bi-cpu"></i> Production
-</a>
+                        <a class="nav-link {% if request.resolver_match.app_name == 'production' %}active{% endif %}"
+                        href="{% url 'production:liste_productions' %}">
                             <i class="bi bi-cpu"></i> Production
                         </a>
                     </li>
