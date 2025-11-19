@@ -1,6 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -22,11 +19,17 @@ def ajouter_site(request):
             return redirect("sites:liste")
     else:
         form = SiteFabricationForm()
+
     return render(request, "sites/form.html", {"form": form})
 
 @login_required
 def modifier_site(request, id):
-    site = get_object_or_404(SiteFabrication, pk=id)
+    try:
+        site = SiteFabrication.objects.get(pk=id)
+    except SiteFabrication.DoesNotExist:
+        messages.error(request, "Le site demandé n'existe pas.")
+        return redirect("sites:liste")
+
     if request.method == "POST":
         form = SiteFabricationForm(request.POST, instance=site)
         if form.is_valid():
@@ -35,14 +38,20 @@ def modifier_site(request, id):
             return redirect("sites:liste")
     else:
         form = SiteFabricationForm(instance=site)
-    return render(request, "sites/form.html", {"form": form})
+
+    return render(request, "sites/form.html", {"form": form, "site": site})
 
 @login_required
 def supprimer_site(request, id):
-    site = get_object_or_404(SiteFabrication, pk=id)
+    try:
+        site = SiteFabrication.objects.get(pk=id)
+    except SiteFabrication.DoesNotExist:
+        messages.error(request, "Impossible de supprimer : ce site n'existe plus.")
+        return redirect("sites:liste")
+
     if request.method == "POST":
         site.delete()
         messages.success(request, "Site supprimé avec succès !")
-        return redirect("sites:liste")   # 🔥 BON NOM
-    return render(request, "sites/supprimer.html", {"site": site})
+        return redirect("sites:liste")
 
+    return render(request, "sites/supprimer.html", {"site": site})
